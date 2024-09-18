@@ -4,14 +4,20 @@ import axios from 'axios';
 
 export const useFetchStore = defineStore('fetchStore', () => {
   const allMatchData = ref([]);
-  const last5Acs = [];
-  const resultToShow = ref([]);
-  function getResult() {
-    return resultToShow.value
+  const allPlayer = [];
+
+  const resultAcs = ref([]);
+  const resultHs = ref([])
+  function getAcsResult() {
+    return resultAcs.value
+  }
+  function getHsResult() {
+    return resultHs.value
   }
 
   async function getData(url) {
-    resultToShow.value = [];
+    resultAcs.value = [];
+
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -23,14 +29,14 @@ export const useFetchStore = defineStore('fetchStore', () => {
       const result = JSON.parse(raw);
       allMatchData.value = result.data;
 
-      // Clear last5Acs before processing new data
-      last5Acs.length = 0;
+      // Clear allPlayer before processing new data
+      allPlayer.length = 0;
 
       allMatchData.value.map((x) => {
         x.players.all_players.map((y) => {
           console.log(x, y)
           if (['Desmoul', 'lotte D angelo', 'Chunchunmaru', 'Karn5656', 'perle', 'Eighty Six', 'Saint Laurent', 'Shukaku'].includes(y.name)) {
-            last5Acs.push({
+            allPlayer.push({
               name: y.name,
               acs: Math.ceil(y.stats.score / x.metadata.rounds_played),
               kda: {kills: y.stats.kills, deaths: y.stats.deaths, assists: y.stats.assists},
@@ -43,11 +49,11 @@ export const useFetchStore = defineStore('fetchStore', () => {
         });
       });
 
-      let leastAcsByPlayer = {};
-      last5Acs.forEach(player => {
-        // If player is not yet in the object or the current ACS is less than the stored one, update it
-        if (!leastAcsByPlayer[player.name] || player.acs < leastAcsByPlayer[player.name].acs) {
-          leastAcsByPlayer[player.name] = {
+      let mostAcsByPlayer = {};
+      allPlayer.forEach(player => {
+        // If player is not yet in the object or the current ACS is more than the stored one, update it
+        if (!mostAcsByPlayer[player.name] || player.acs > mostAcsByPlayer[player.name].acs) {
+          mostAcsByPlayer[player.name] = {
             acs: player.acs,
             map: player.map,
             character: player.character,
@@ -58,16 +64,44 @@ export const useFetchStore = defineStore('fetchStore', () => {
         }
       });
 
-      for (const player in leastAcsByPlayer) {
-        resultToShow.value.push({
+      let mostHsByPlayer = {}
+      allPlayer.forEach(player => {
+        // If player is not yet in the object or the current ACS is more than the stored one, update it
+        if (!mostHsByPlayer[player.name] || player.hsPercent > mostHsByPlayer[player.name].hsPercent) {
+          mostHsByPlayer[player.name] = {
+            acs: player.acs,
+            map: player.map,
+            character: player.character,
+            kda: player.kda,
+            hsPercent: player.hsPercent,
+            date: player.date
+          };
+        }
+      });
+
+      for (const player in mostAcsByPlayer) {
+        resultAcs.value.push({
           name: player,
-          lacs: leastAcsByPlayer[player].acs,
-          date: leastAcsByPlayer[player].date,
-          map: leastAcsByPlayer[player].map,
-          character: leastAcsByPlayer[player].character,
-          kda: leastAcsByPlayer[player].kda,
-          hsPercent: leastAcsByPlayer[player].hsPercent,
-          date: leastAcsByPlayer[player].date
+          lacs: mostAcsByPlayer[player].acs,
+          date: mostAcsByPlayer[player].date,
+          map: mostAcsByPlayer[player].map,
+          character: mostAcsByPlayer[player].character,
+          kda: mostAcsByPlayer[player].kda,
+          hsPercent: mostAcsByPlayer[player].hsPercent,
+          date: mostAcsByPlayer[player].date
+        });
+      }
+
+      for (const player in mostHsByPlayer) {
+        resultHs.value.push({
+          name: player,
+          lacs: mostHsByPlayer[player].acs,
+          date: mostHsByPlayer[player].date,
+          map: mostHsByPlayer[player].map,
+          character: mostHsByPlayer[player].character,
+          kda: mostHsByPlayer[player].kda,
+          hsPercent: mostHsByPlayer[player].hsPercent,
+          date: mostHsByPlayer[player].date
         });
       }
     } catch (error) {
@@ -75,5 +109,5 @@ export const useFetchStore = defineStore('fetchStore', () => {
     }
   }
 
-  return { getData, resultToShow, getResult }
+  return { getData, resultAcs, getAcsResult, getHsResult }
 })

@@ -10,21 +10,20 @@
     store.getData(`https://api.henrikdev.xyz/valorant/v2/account/${name}/${tag}`)
   }
   async function testFindLastMatch() {
-    if(store.getResult().length === 0) {
+    if(store.getHsResult().length === 0) {
       isLoading.value = true
       await store.getData(`https://api.henrikdev.xyz/valorant/v3/matches/ap/Desmoul/ttt`)
-      setTimeout(() => {
-        isLoading.value = false
-      }, 16000)
+      // Since async await this no need to settimeout because it's wait above task to finish yet
+      isLoading.value = false
     } else {
-      console.log(store.getResult())
+      console.log(store.getHsResult())
     }
   }
   
   // Result to show
   const sorted = computed(() => {
     // Most to less
-    return [...store.getResult()].sort((a, b) => b.hsPercent - a.hsPercent)
+    return [...store.getHsResult()].sort((a, b) => b.hsPercent - a.hsPercent)
   })
   onMounted(() => testFindLastMatch())
 </script>
@@ -33,7 +32,10 @@
   <div class="w-full h-screen bg-slate-800 flex flex-col">
     <div class="flex flex-col items-center">
       <div class="w-full max-w-4xl px-4 sm:px-0">
-        <p class="flex m-3 justify-center items-center text-white text-sm text-red-400">*From limitation of API rate limit all stats are based on 'Desmoul' only last 5 matches to fix the problem</p>
+        <div class="m-3">
+          <p class="flex justify-center items-center text-white text-sm text-red-400">*From limitation of API rate limit all stats are based on 'Desmoul' only last 5 matches to fix the problem</p>
+          <p class="flex justify-center items-center text-white text-sm text-red-400">Stats show your best match of last 5 games</p>
+        </div>
         <div class="flex justify-around p-3 bg-white rounded-t-lg shadow-md text-sm font-semibold">
           <div>#</div>
           <div>IGN</div>
