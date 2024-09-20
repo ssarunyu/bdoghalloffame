@@ -16,6 +16,9 @@ const route = useRoute();
     <div :class="['p-2', route.name === 'headshot' ? 'border-b-2 border-white' : '']">
       <RouterLink :to="{name: 'headshot'}">Best HS%</RouterLink>
     </div>
+    <div :class="['p-2', route.name === 'stats' ? 'border-b-2 border-white' : '']">
+      <RouterLink :to="{name: 'stats'}">Stats</RouterLink>
+    </div>
     <div :class="['p-2', route.name === 'about' ? 'border-b-2 border-white' : '']">
       <RouterLink :to="{name: 'about'}">About</RouterLink>
     </div>

@@ -17,7 +17,6 @@ export const useFetchStore = defineStore('fetchStore', () => {
 
   async function getData(url) {
     resultAcs.value = [];
-
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -109,5 +108,30 @@ export const useFetchStore = defineStore('fetchStore', () => {
     }
   }
 
-  return { getData, resultAcs, getAcsResult, getHsResult }
+  async function fetchData(url) {
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `${url}?api_key=HDEV-17316141-9e15-451f-8260-fe73f9e6165b`,
+    }
+    try {
+      const response = await axios.request(config);
+      const raw = JSON.stringify(response.data);
+      const result = JSON.parse(raw);
+      return result
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function normalFetchData(url) {
+    try {
+      const response = await axios.request(url)
+      return response.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  return { getData, resultAcs, getAcsResult, getHsResult, fetchData, normalFetchData }
 })
