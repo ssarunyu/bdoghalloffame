@@ -12,7 +12,7 @@
   async function testFindLastMatch() {
     if(store.getHsResult().length === 0) {
       isLoading.value = true
-      await store.getData(`https://api.henrikdev.xyz/valorant/v3/matches/ap/Desmoul/ttt`)
+      await store.getData(`https://api.henrikdev.xyz/valorant/v3/matches/ap/Clara/ttt`)
       // Since async await this no need to settimeout because it's wait above task to finish yet
       isLoading.value = false
     } else {
@@ -33,7 +33,7 @@
     <div class="flex flex-col items-center">
       <div class="w-full max-w-4xl px-4 sm:px-0">
         <div class="m-3">
-          <p class="flex justify-center items-center text-white text-sm text-red-400">*From limitation of API rate limit all stats are based on 'Desmoul' only last 5 matches to fix the problem</p>
+          <p class="flex justify-center items-center text-white text-sm text-red-400">*From limitation of API rate limit all stats are based on 'Clara' only last 5 matches to fix the problem</p>
           <p class="flex justify-center items-center text-white text-sm text-red-400">Stats show your best match of last 5 games</p>
         </div>
         <div class="flex justify-around p-3 bg-white rounded-t-lg shadow-md text-sm font-semibold">
