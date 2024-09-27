@@ -56,8 +56,7 @@
         minute: '2-digit', 
         hour12: false // 24-hour clock
       }
-      const gmtPlus7Date = new Date(toDate.getTime() + (7 * 60 * 60 * 1000))
-      const gmtPlus7String = gmtPlus7Date.toLocaleString('en-GB', options)
+      const gmtPlus7String = new Date(toDate.getTime()).toLocaleString('en-GB', options)
       return gmtPlus7String
     }
 
