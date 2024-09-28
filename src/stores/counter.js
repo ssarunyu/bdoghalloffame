@@ -3,20 +3,18 @@ import { defineStore } from 'pinia'
 import axios from 'axios';
 
 export const useFetchStore = defineStore('fetchStore', () => {
-  const allMatchData = ref([]);
-  const allPlayer = [];
+  // For details
+  const selectedPlayer = ref(null)
 
-  const resultAcs = ref([]);
-  const resultHs = ref([])
-  function getAcsResult() {
-    return resultAcs.value
-  }
-  function getHsResult() {
-    return resultHs.value
+  const allMatchData = ref([]);
+  const allPlayer = ref([])
+  const agentData = ref({})
+
+  function getAllPlayer() {
+    return allPlayer.value
   }
 
   async function getData(url) {
-    resultAcs.value = [];
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -28,81 +26,29 @@ export const useFetchStore = defineStore('fetchStore', () => {
       const result = JSON.parse(raw);
       allMatchData.value = result.data;
 
-      // Clear allPlayer before processing new data
-      allPlayer.length = 0;
+      // Clear allPlayer.value before processing new data
+      allPlayer.value.length = 0;
 
       allMatchData.value.map((x) => {
         x.players.all_players.map((y) => {
-          console.log(x, y)
           if (['Clara', 'lotte D angelo', 'Chunchunmaru', 'Karn5656', 'perle', 'Eighty Six', 'Saint Laurent', 'Shukaku'].includes(y.name)) {
-            allPlayer.push({
+            allPlayer.value.push({
               name: y.name,
               acs: Math.ceil(y.stats.score / x.metadata.rounds_played),
               kda: {kills: y.stats.kills, deaths: y.stats.deaths, assists: y.stats.assists},
               map: x.metadata.map,
               character: y.character,
               hsPercent: Math.ceil((y.stats.headshots / (y.stats.bodyshots + y.stats.headshots + y.stats.legshots)) * 100),
-              date: x.metadata.game_start_patched
+              date: x.metadata.game_start_patched,
+              userPlayedTeam: y.team,
+              allRound: x.rounds,
+              ability_casts: y.ability_casts,
+              damage_made: y.damage_made,
+              damage_received: y.damage_received
             });
           }
         });
       });
-
-      let mostAcsByPlayer = {};
-      allPlayer.forEach(player => {
-        // If player is not yet in the object or the current ACS is more than the stored one, update it
-        if (!mostAcsByPlayer[player.name] || player.acs > mostAcsByPlayer[player.name].acs) {
-          mostAcsByPlayer[player.name] = {
-            acs: player.acs,
-            map: player.map,
-            character: player.character,
-            kda: player.kda,
-            hsPercent: player.hsPercent,
-            date: player.date
-          };
-        }
-      });
-
-      let mostHsByPlayer = {}
-      allPlayer.forEach(player => {
-        // If player is not yet in the object or the current ACS is more than the stored one, update it
-        if (!mostHsByPlayer[player.name] || player.hsPercent > mostHsByPlayer[player.name].hsPercent) {
-          mostHsByPlayer[player.name] = {
-            acs: player.acs,
-            map: player.map,
-            character: player.character,
-            kda: player.kda,
-            hsPercent: player.hsPercent,
-            date: player.date
-          };
-        }
-      });
-
-      for (const player in mostAcsByPlayer) {
-        resultAcs.value.push({
-          name: player,
-          lacs: mostAcsByPlayer[player].acs,
-          date: mostAcsByPlayer[player].date,
-          map: mostAcsByPlayer[player].map,
-          character: mostAcsByPlayer[player].character,
-          kda: mostAcsByPlayer[player].kda,
-          hsPercent: mostAcsByPlayer[player].hsPercent,
-          date: mostAcsByPlayer[player].date
-        });
-      }
-
-      for (const player in mostHsByPlayer) {
-        resultHs.value.push({
-          name: player,
-          lacs: mostHsByPlayer[player].acs,
-          date: mostHsByPlayer[player].date,
-          map: mostHsByPlayer[player].map,
-          character: mostHsByPlayer[player].character,
-          kda: mostHsByPlayer[player].kda,
-          hsPercent: mostHsByPlayer[player].hsPercent,
-          date: mostHsByPlayer[player].date
-        });
-      }
     } catch (error) {
       console.log(error);
     }
@@ -133,5 +79,5 @@ export const useFetchStore = defineStore('fetchStore', () => {
     }
   }
 
-  return { getData, resultAcs, getAcsResult, getHsResult, fetchData, normalFetchData }
+  return { getData, fetchData, normalFetchData, getAllPlayer }
 })
