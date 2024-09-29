@@ -31,6 +31,7 @@ export const useFetchStore = defineStore('fetchStore', () => {
 
       allMatchData.value.map((x) => {
         x.players.all_players.map((y) => {
+          console.log(y)
           if (['Clara', 'lotte D angelo', 'Chunchunmaru', 'Karn5656', 'perle', 'Eighty Six', 'Saint Laurent', 'Shukaku'].includes(y.name)) {
             allPlayer.value.push({
               name: y.name,
@@ -44,7 +45,9 @@ export const useFetchStore = defineStore('fetchStore', () => {
               allRound: x.rounds,
               ability_casts: y.ability_casts,
               damage_made: y.damage_made,
-              damage_received: y.damage_received
+              damage_received: y.damage_received,
+              characterIcon: y.assets.agent.small,
+              shotStat: y.stats
             });
           }
         });

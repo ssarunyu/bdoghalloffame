@@ -4,7 +4,22 @@
 <template>
     <div class="flex flex-col items-center w-full h-screen bg-slate-800 text-white">
         <!-- Parent of all div -->
-        <div class="flex flex-col items-center my-5">
+        <div class="flex flex-col items-center my-5 space-y-10">
+            <!-- Child element -->
+            <div class="w-3/4">
+                <h1 class="font-bold text-2xl">Patch 1.1</h1>
+                <hr class="h-px my-2 bg-gray-500 border-0">
+                <!-- Core update -->
+                <div>
+                    <h1 class="text-lg font-semibold">Core update</h1>
+                    <p>• UI update</p>
+                    <p>• Detail now show shot your made in that game</p>
+                </div>
+                <!-- Signature -->
+                <div class="mt-3">
+                    <p class="text-xs">Developer : <a class="underline" target="_blank" href="https://github.com/ssarunyu">ssarunyu</a></p>
+                </div>
+            </div>
             <!-- Child element -->
             <div class="w-3/4">
                 <h1 class="font-bold text-2xl">Patch 1.0</h1>

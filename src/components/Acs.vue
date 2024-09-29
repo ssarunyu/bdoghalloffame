@@ -29,46 +29,69 @@
 </script>
 
 <template>
-  <!-- Detail of that users -->
+  <!-- Detail of the selected user -->
   <Detail v-if="store.selectedPlayer" :detail-props="store.selectedPlayer" />
-  <div class="w-full h-screen bg-slate-800 flex flex-col">
-    <div class="flex flex-col items-center">
-      <div class="w-full max-w-4xl px-4 sm:px-0">
-        <div class="m-3">
-          <p class="flex justify-center items-center text-white text-sm text-red-400">*From limitation of API rate limit all stats are based on 'Clara' only last 5 matches to fix the problem</p>
-          <p class="flex justify-center items-center text-white text-sm text-red-400">Stats show your last 5 games</p>
-        </div>
-        <div class="flex justify-around p-3 bg-white rounded-t-lg shadow-md text-sm font-semibold">
+
+  <!-- Main Content -->
+  <div class="w-full h-screen bg-slate-800 flex flex-col items-center">
+    <div class="w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Notification about API limitations -->
+      <div class="bg-red-500 text-center text-sm text-white p-2 rounded-md mb-4 shadow-md">
+        <p>*Due to API rate limits, stats are based on the last 5 matches of 'Clara' only</p>
+        <p>Stats show your last 5 games.</p>
+      </div>
+
+      <!-- Table Header -->
+      <div class="flex justify-between p-4 bg-slate-900 rounded-t-lg shadow-md text-sm font-semibold text-gray-300">
+        <div class="flex items-center space-x-10">
           <div>#</div>
           <div>IGN</div>
-          <div>Character</div>
-          <div>Map</div>
-          <div>KDA</div>
-          <div>+/-</div>
-          <div>ACS</div>
         </div>
-        <!-- Show loading spinner while fetching data -->
-        <div v-if="isLoading" class="flex flex-col text-white justify-center items-center mt-5">
-          <!-- Spinner -->
-          <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-slate-500"></div>
-          <p class="mt-2">Loading the data... This process will slow because API Endpoint not me :3</p>
+        <div class="flex items-center space-x-4">
+          <div class="w-24 text-center">Character</div>
+          <div class="w-24 text-center">Map</div>
+          <div class="w-24 text-center">KDA</div>
+          <div class="w-24 text-center">+/-</div>
+          <div class="w-24 text-center">HS%</div>
+          <div class="w-24 text-center">ACS</div>
         </div>
-        <div class="mt-5 space-y-5 max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-400 scrollbar-track-slate-700">
-          <!-- Looped Data -->
-          <div class="p-3 bg-slate-700 text-white flex justify-between items-center rounded-md shadow-sm cursor-pointer"
+      </div>
+
+      <!-- Loading Spinner -->
+      <div v-if="isLoading" class="flex flex-col items-center mt-5 text-white">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-gray-500"></div>
+        <p class="mt-2">Loading data... Please wait, as this may take some time due to API limitations</p>
+      </div>
+
+      <!-- Player Data List -->
+      <div class="overflow-y-auto max-h-[500px] space-y-5 bg-gray-800 rounded-b-lg shadow-md scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-900">
+        <div
+          class="p-4 flex justify-between items-center bg-gray-700 hover:bg-gray-600 text-white cursor-pointer transition rounded-md"
           v-for="(player, index) in sortedAcs"
-          @click="watchMoreDetail(player)">
-            <div class="w-8 text-center">{{ index + 1 }}</div>
-            <div class="w-32 font-semibold truncate">{{ player.name }}</div>
+          :key="index"
+          @click="watchMoreDetail(player)"
+        >
+          <!-- Rank and Player Name -->
+          <div class="flex items-center space-x-4">
+            <div class="w-8 text-center font-bold text-lg">{{ index + 1 }}</div>
+            <div class="w-40 font-semibold truncate">{{ player.name }}</div>
+          </div>
+
+          <!-- Player Stats -->
+          <div class="flex items-center space-x-4">
+            <img :src="player.characterIcon" class="w-10 h-10 rounded-full object-cover" alt="Character Icon" />
             <div class="w-24 text-center">{{ player.character }}</div>
             <div class="w-24 text-center">{{ player.map }}</div>
-            <div class="w-32 text-center">{{ player.kda.kills }}/{{ player.kda.deaths }}/{{ player.kda.assists }}</div>
-            <div 
-            class="w-32 text-center"
-            :class="player.kda.kills - player.kda.deaths >= 0 ? 'text-green-500' : 'text-red-500'">
+            <div class="w-24 text-center">{{ player.kda.kills }}/{{ player.kda.deaths }}/{{ player.kda.assists }}</div>
+            <div
+            class="w-20 text-center font-semibold"
+            :class="player.kda.kills - player.kda.deaths >= 0 ? 'text-green-400' : 'text-red-400'"
+            >
             {{ player.kda.kills - player.kda.deaths >= 0 ? `+${player.kda.kills - player.kda.deaths }` : `${player.kda.kills - player.kda.deaths }` }}
             </div>
-            <div class="w-24 text-center">{{ player.acs }}</div>
+            <div class="w-24 text-center">{{ player.hsPercent }}%</div>
+            <div class="w-20 text-center font-semibold">{{ player.acs }}</div>
           </div>
         </div>
       </div>
