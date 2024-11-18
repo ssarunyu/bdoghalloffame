@@ -13,6 +13,9 @@ const route = useRoute();
     <div :class="['p-2', route.name === 'acs' ? 'border-b-2 border-white' : '']">
       <RouterLink :to="{name: 'acs'}">Best ACS</RouterLink>
     </div>
+    <div :class="['p-2', route.name === 'performance' ? 'border-b-2 border-white' : '']">
+      <RouterLink :to="{name: 'performance'}">Performance</RouterLink>
+    </div>
     <div :class="['p-2', route.name === 'stats' ? 'border-b-2 border-white' : '']">
       <RouterLink :to="{name: 'stats'}">Stats</RouterLink>
     </div>
