@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import Skeleton from './Skeleton.vue';
+import MatchItem from './MatchItem.vue';
 
 const username = ref('')
 const userTag = ref('')
@@ -12,6 +13,7 @@ const isLoading = ref(false)
 async function fetchData() {
     isLoading.value = true
     // clear data when click again
+    last5Games.value = []
     statResult.value = []
 
     const response = await fetch(`https://api.henrikdev.xyz/valorant/v3/matches/ap/${encodeURIComponent(username.value)}/${userTag.value}?api_key=HDEV-17316141-9e15-451f-8260-fe73f9e6165b`)
@@ -248,6 +250,12 @@ function createChart() {
             :options="options"
             :series="series"
             />
+        </div>
+
+        <!-- Match History -->
+        <div v-if="last5Games.length > 0" class="space-y-10">
+            <h1 class="flex justify-center items-center font-bold text-2xl">Match History</h1>
+            <MatchItem v-for="st in last5Games" :data="st" :player_name="username" :rank_img="statResult.rank_img" />
         </div>
     </div>
 </template>

@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import About from '@/components/About.vue'
 import Acs from '@/components/Acs.vue'
-import OwnStat from '@/components/OwnStat.vue'
 import Patch from '@/components/Patch.vue'
 import Performance from '@/components/Performance.vue'
 
@@ -22,11 +21,6 @@ const router = createRouter({
       path: '/about',
       name: 'about',
       component: About
-    },
-    {
-      path: '/stats',
-      name: 'stats',
-      component: OwnStat
     },
     {
       path: '/patch-note',
