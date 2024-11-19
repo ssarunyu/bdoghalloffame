@@ -36,14 +36,14 @@ const watchMoreDetail = (player) => {
 
 const toggleSort = (field) => {
     if (sortBy.value === field) {
-        // Toggle sort order for the same field
+        // Toggle the sort order if the same field is clicked
         sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
     } else {
-        // Switch to sorting by a new field and set order to ascending initially
+        // Switch to sorting by the new field
         sortBy.value = field;
-        sortOrder.value = 'asc';
+        sortOrder.value = 'desc'; // Default to descending order
     }
-}
+};
 </script>
 
 
