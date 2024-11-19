@@ -1,32 +1,51 @@
 <script setup>
-  import { computed, onMounted, ref } from 'vue'
-  import { useFetchStore } from '@/stores/counter'
-  import Detail from './Detail.vue';
+import { computed, onMounted, ref } from 'vue';
+import { useFetchStore } from '@/stores/counter';
+import Detail from './Detail.vue';
 
-  const isLoading = ref(false)
+const isLoading = ref(false);
+const store = useFetchStore();
+const sortBy = ref('acs'); // Default sort by ACS
+const sortOrder = ref('desc'); // Default sort order is descending
 
-  // access the `store` variable anywhere in the component ✨
-  const store = useFetchStore()
-  async function getLast5Matches() {
-    if(store.getAllPlayer().length === 0) {
-      isLoading.value = true
-      await store.getData(`https://api.henrikdev.xyz/valorant/v3/matches/ap/Clara/ttt`)
-      // Since async await this no need to settimeout because it's wait above task to finish yet
-      isLoading.value = false
+async function getLast5Matches() {
+    if (store.getAllPlayer().length === 0) {
+        isLoading.value = true;
+        await store.getData(`https://api.henrikdev.xyz/valorant/v3/matches/ap/Clara/ttt`);
+        isLoading.value = false;
     } else {
-      console.log(store.getAllPlayer())
+        console.log(store.getAllPlayer());
     }
-  }
+}
 
-  onMounted(() => getLast5Matches())
-  const sortedAcs = computed(() => {
-    return [...store.getAllPlayer()].sort((a, b) => b.acs - a.acs)
-  })
+onMounted(() => getLast5Matches());
 
-  const watchMoreDetail = (player) => {
-    store.selectedPlayer = player
-  }
+const sortedAcs = computed(() => {
+    return [...store.getAllPlayer()].sort((a, b) => {
+        const valueA = sortBy.value === 'hsPercent' ? a.hsPercent : sortBy.value === 'acs' ? a.acs : a.kda.kills - a.kda.deaths;
+        const valueB = sortBy.value === 'hsPercent' ? b.hsPercent : sortBy.value === 'acs' ? b.acs : b.kda.kills - b.kda.deaths;
+
+        // Sort order: Ascending or Descending
+        return sortOrder.value === 'asc' ? valueA - valueB : valueB - valueA;
+    });
+});
+
+const watchMoreDetail = (player) => {
+    store.selectedPlayer = player;
+};
+
+const toggleSort = (field) => {
+    if (sortBy.value === field) {
+        // Toggle sort order for the same field
+        sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        // Switch to sorting by a new field and set order to ascending initially
+        sortBy.value = field;
+        sortOrder.value = 'asc';
+    }
+}
 </script>
+
 
 <template>
   <!-- Detail of the selected user -->
@@ -52,9 +71,15 @@
           <div class="w-24 text-center">Character</div>
           <div class="w-24 text-center">Map</div>
           <div class="w-24 text-center">KDA</div>
-          <div class="w-24 text-center">+/-</div>
-          <div class="w-24 text-center">HS%</div>
-          <div class="w-24 text-center">ACS</div>
+          <div class="w-24 text-center cursor-pointer hover:text-white" @click="toggleSort('+/-')">
+            +/- <span>{{ sortBy === '+/-' ? (sortOrder === 'asc' ? '▲' : '▼') : '▼' }}</span>
+          </div>
+          <div class="w-24 text-center cursor-pointer hover:text-white" @click="toggleSort('hsPercent')">
+            HS% <span>{{ sortBy === 'hsPercent' ? (sortOrder === 'asc' ? '▲' : '▼') : '▼' }}</span>
+          </div>
+          <div class="w-24 text-center cursor-pointer hover:text-white" @click="toggleSort('acs')">
+            ACS <span>{{ sortBy === 'acs' ? (sortOrder === 'asc' ? '▲' : '▼') : '▼' }}</span>
+          </div>
         </div>
       </div>
 

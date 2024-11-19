@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import FullMatchDetail from './FullMatchDetail.vue';
 
 const props = defineProps({
     data: {
@@ -42,17 +43,24 @@ const findMapImg = async () => {
 
 // Fetch the map image when the component is mounted or props.data is available
 onMounted(() => {
+    console.log(props.data)
     if (props.data) {
         findMapImg()
         findWin()
     }
 })
 
+const showMatchDetail = ref(false)
+const openMatchDetail = () => {
+    showMatchDetail.value = true
+}
+
 
 </script>
 
 <template>
-    <div v-if="props.data" class="p-4 bg-slate-700 rounded-lg shadow flex items-center justify-around relative" 
+    <FullMatchDetail v-if="showMatchDetail" :details="props.data" />
+    <div @click="openMatchDetail" v-if="props.data" class="p-4 bg-slate-700 rounded-lg shadow flex items-center justify-around relative" 
          :style="{ backgroundImage: `url(${mapImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }">
         
         <!-- Black Fade Overlay -->
