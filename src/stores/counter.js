@@ -32,7 +32,7 @@ export const useFetchStore = defineStore('fetchStore', () => {
       allMatchData.value.map((x) => {
         x.players.all_players.map((y) => {
           console.log(y)
-          if (['Clara', 'lotte D angelo', 'Chunchunmaru', 'Karn5656', 'perle', 'Eighty Six', 'Saint Laurent', 'Shukaku'].includes(y.name)) {
+          if (['Clara', 'perfume', 'Chunchunmaru', 'Karn5656', 'perle', 'Eighty Six', 'Saint Laurent', 'Shukaku'].includes(y.name)) {
             allPlayer.value.push({
               name: y.name,
               acs: Math.ceil(y.stats.score / x.metadata.rounds_played),
